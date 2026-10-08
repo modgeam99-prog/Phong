@@ -1,0 +1,25 @@
+name: Build GBA ROM
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=$DEVKITPRO/devkitARM
+          export PATH=$PATH:$DEVKITARM/bin:$DEVKITPRO/tools/bin
+          make
+      - name: Upload ROM
+        uses: actions/upload-artifact@v4
+        with:
+          name: aimlock-gba
+          path: aimlock.gba
